@@ -253,7 +253,6 @@ bool validateNumber(const char *jsonString, int length, int *start, int *end)
         if (jsonString[*start] == '-' && *end == ((*start) + 1)) {
           return false;
         }
-        (*end)--;
         return true;
       default:
         return false;
