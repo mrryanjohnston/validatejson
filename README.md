@@ -22,6 +22,9 @@ To validate a string of potention json, pass it as the first argument:
 
 ```
 $ make
+gcc -c -o validatejson.o validatejson.c
+gcc -o validatejson main.c validatejson.o
+
 $ ./validatejson '{ "foo": [ 1, 2, "Bar!" ] }'
 PASS
 ```
@@ -41,7 +44,6 @@ To compile and run the "test suite:"
 
 ```
 $ make test
-
 gcc -c -o validatejson.o validatejson.c
 gcc -o tests/test tests/test.c validatejson.o
 ./tests/test
