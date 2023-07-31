@@ -10,7 +10,7 @@ Use `make` to compile the `validatejson` binary:
 
 ```
 $ make
-gcc -c -o validatejson.o validatejson.c
+gcc -c validatejson.c
 gcc -o validatejson main.c validatejson.o
 ```
 
