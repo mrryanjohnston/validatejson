@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 bool validateJSON(const char *);
 bool validateJSONElement(const char *, int, int *, int *);
 bool validateArray(const char *, int, int *, int *);

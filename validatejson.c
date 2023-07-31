@@ -1,9 +1,5 @@
-#include <dirent.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
-#include <unistd.h>
 #include "validatejson.h"
 
 bool validateObject(const char *jsonString, int length, int *start, int *end)
@@ -253,6 +249,7 @@ bool validateNumber(const char *jsonString, int length, int *start, int *end)
         if (jsonString[*start] == '-' && *end == ((*start) + 1)) {
           return false;
         }
+	(*end)--;
         return true;
       default:
         return false;
@@ -326,69 +323,4 @@ bool validateJSON(const char *jsonString) {
   int end = 0;
 
   return validateJSONElement(jsonString, length, &start, &end);
-}
-
-int main(int argc, char *argv[])
-{
-  if (argc == 2) {
-    if (!validateJSON(argv[1]))
-    {
-      printf("ERROR: %s should be valid!\n", argv[1]);
-      return -1;
-    }
-    printf("PASS\n");
-    return 0;
-  } else if (argc == 1) {
-    DIR *dirp;
-    struct dirent *dp;
-    FILE *file;
-    char buffer[10000];
-    size_t n;
-
-    printf("Test results:\n");
-    printf("================\n");
-
-    dirp = opendir("valid");
-    chdir("valid");
-    while ((dp = readdir(dirp)) != NULL)
-    {
-      if (dp->d_name[0] != '.' && (file = fopen(dp->d_name, "r")) != NULL)
-      {
-        n = fread(buffer, sizeof(char), 10000, file);
-        buffer[n] = '\0';
-        if (!validateJSON(buffer))
-        {
-          printf("ERROR: %s should be valid!\n", buffer);
-          fclose(file);
-          return -1;
-        }
-        fclose(file);
-      }
-    }
-    closedir(dirp);
-
-    chdir("..");
-    dirp = opendir("invalid");
-    chdir("invalid");
-    while ((dp = readdir(dirp)) != NULL)
-    {
-      if (dp->d_name[0] != '.' && (file = fopen(dp->d_name, "r")) != NULL)
-      {
-        n = fread(buffer, sizeof(char), 10000, file);
-        buffer[n] = '\0';
-        if (validateJSON(buffer))
-        {
-          printf("ERROR: %s should be invalid!\n", buffer);
-          fclose(file);
-          return -1;
-        }
-        fclose(file);
-      }
-    }
-    closedir(dirp);
-
-    printf("PASS\n");
-    return 0;
-  }
-  return -1;
 }
