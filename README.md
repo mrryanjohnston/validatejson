@@ -6,6 +6,14 @@
 
 ## Usage
 
+Use `make` to compile the `validatejson` binary:
+
+```
+$ make
+gcc -c -o validatejson.o validatejson.c
+gcc -o validatejson main.c validatejson.o
+```
+
 Running `./validatejson` with no arguments will
 display the USAGE text:
 
@@ -21,10 +29,6 @@ Example:
 To validate a string of potention json, pass it as the first argument:
 
 ```
-$ make
-gcc -c -o validatejson.o validatejson.c
-gcc -o validatejson main.c validatejson.o
-
 $ ./validatejson '{ "foo": [ 1, 2, "Bar!" ] }'
 PASS
 ```
