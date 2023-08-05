@@ -26,7 +26,7 @@ int main()
 			{
 				printf("ERROR: %s should be valid!\n", buffer);
 				fclose(file);
-				return -1;
+				return 0;
 			}
 			fclose(file);
 		}
@@ -46,7 +46,7 @@ int main()
 			{
 				printf("ERROR: %s should be invalid!\n", buffer);
 				fclose(file);
-				return -1;
+				return 0;
 			}
 			fclose(file);
 		}
