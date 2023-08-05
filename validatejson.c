@@ -176,6 +176,7 @@ bool validateString(const char *jsonString, int *cursor, int length)
 bool validateExponent(const char *jsonString, int *cursor, int length)
 {
   (*cursor)++;
+  bool canReturn = false;
   bool numberIsValid = false;
   for (; *cursor < length; (*cursor)++)
   {
@@ -203,6 +204,7 @@ bool validateExponent(const char *jsonString, int *cursor, int length)
 	{
 	  return false;
 	}
+	canReturn = true;
         break;
       case '}':
       case ']':
@@ -213,7 +215,7 @@ bool validateExponent(const char *jsonString, int *cursor, int length)
       case '\n':
       case '\0':
 	(*cursor)--;
-	return true;
+	return canReturn;
       default:
 	return false;
     }
@@ -223,6 +225,7 @@ bool validateExponent(const char *jsonString, int *cursor, int length)
 bool validateFraction(const char *jsonString, int *cursor, int length)
 {
   (*cursor)++;
+  bool canReturn = false;
   bool eIsValid = false;
   for (; *cursor < length; (*cursor)++)
   {
@@ -239,6 +242,7 @@ bool validateFraction(const char *jsonString, int *cursor, int length)
       case '9':
       case '0':
 	eIsValid = true;
+	canReturn = true;
         break;
       case 'e':
       case 'E':
@@ -256,7 +260,7 @@ bool validateFraction(const char *jsonString, int *cursor, int length)
       case '\n':
       case '\0':
 	(*cursor)--;
-	return true;
+	return canReturn;
       default:
 	return false;
     }
