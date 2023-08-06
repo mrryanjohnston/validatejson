@@ -46,6 +46,24 @@ $ ./validatejson '{ "foo": [ 1, 2, "Bar!" ] }'
 PASS
 ```
 
+To use the `validateJSON` function in your C code, copy the
+`validatejson.h` and `validatejson.c` files in the same directory
+as your C file:
+
+```c
+#include "validatejson.h"
+
+int main(int argc, char *argv[])
+{
+	if (argc == 1 && validateJSON(argv[1]))
+	{
+		return 0;
+	} else {
+		return -1;
+	}
+}
+```
+
 ## Development
 
 Use `make clean` to remove the compiled binary and object headers:
