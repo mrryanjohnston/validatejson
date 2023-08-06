@@ -258,9 +258,11 @@ bool validateNumber(const char *jsonString, int *cursor, int length)
         periodIsValid = true;
         break;
       case '.':
+	if (!periodIsValid) return false;
 	return validateFraction(jsonString, cursor, length);
       case 'e':
       case 'E':
+	if (!eIsValid) return false;
 	return validateExponent(jsonString, cursor, length);
       case '}':
       case ']':
@@ -291,12 +293,12 @@ bool validateJSONElement(const char *jsonString, int *cursor, int length)
       case '\r':
       case '\n':
         break;
-      case '{':
-        return validateObject(jsonString, cursor, length);
-      case '[':
-        return validateArray(jsonString, cursor, length);
       case '"':
         return validateString(jsonString, cursor, length);
+      case '[':
+        return validateArray(jsonString, cursor, length);
+      case '{':
+        return validateObject(jsonString, cursor, length);
       case 't':
       case 'f':
         return validateBoolean(jsonString, cursor, length);
