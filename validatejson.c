@@ -216,8 +216,7 @@ bool validateFraction(const char *jsonString, int *cursor, int length)
         break;
       case 'e':
       case 'E':
-	if (!eIsValid) return false;
-	return validateExponent(jsonString, cursor, length);
+	return eIsValid && validateExponent(jsonString, cursor, length);
       case '}':
       case ']':
       case ',':
@@ -258,12 +257,10 @@ bool validateNumber(const char *jsonString, int *cursor, int length)
         periodIsValid = true;
         break;
       case '.':
-	if (!periodIsValid) return false;
-	return validateFraction(jsonString, cursor, length);
+	return periodIsValid && validateFraction(jsonString, cursor, length);
       case 'e':
       case 'E':
-	if (!eIsValid) return false;
-	return validateExponent(jsonString, cursor, length);
+	return eIsValid && validateExponent(jsonString, cursor, length);
       case '}':
       case ']':
       case ',':
