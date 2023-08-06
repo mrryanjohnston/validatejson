@@ -3,6 +3,16 @@
 ## Description
 
 `validatejson` checks whether the argument passed is a valid string of JSON
+as defined by
+[RFC 8259](https://datatracker.ietf.org/doc/html/rfc8259).
+It takes a lot of cues implementation-wise from
+[`jsmn`](https://github.com/zserge/jsmn), but it only validates the passed string.
+
+## Why Another JSON Validator?
+
+I really like the aformentioned `jsmn`'s approach to algorithmically parsing
+a string. I wanted something that avoided using `structs` to store references
+to the parsed tokens. I'm hoping this leads to some very fast validations.
 
 ## Usage
 
