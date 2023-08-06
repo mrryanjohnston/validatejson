@@ -11,8 +11,11 @@ It takes a lot of cues implementation-wise from
 ## Why Another JSON Validator?
 
 I really like the aformentioned `jsmn`'s approach to algorithmically parsing
-a string. I wanted something that avoided using `structs` to store references
-to the parsed tokens. I'm hoping this leads to some very fast validations.
+a string. However, it initializes structs for every complete token parsed.
+I wanted something that avoided using `structs` to store references
+to the parsed tokens since I only want to validate the string.
+I'm hoping this leads to some very fast validations at the cost of
+functionality (no ability to reference previously parsed tokens).
 
 ## Usage
 
