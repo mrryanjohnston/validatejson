@@ -267,16 +267,14 @@ bool validateFraction(const char *jsonString, int *cursor, int length)
   }
 }
 
-bool validateNegativeNumber(const char *jsonString, int *cursor, int length)
-{
-  (*cursor)++;
-  return validateNumber(jsonString, cursor, length);
-}
-
 bool validateNumber(const char *jsonString, int *cursor, int length)
 {
   bool plusMinusIsValid, periodIsValid, eIsValid = false;
   bool numberIsValid = true;
+  if (jsonString[*cursor] == '-')
+  {
+    (*cursor)++;
+  }
   for (; *cursor < length; (*cursor)++)
   {
     switch (jsonString[*cursor])
@@ -295,8 +293,8 @@ bool validateNumber(const char *jsonString, int *cursor, int length)
         {
 	  return false;
         }
-          eIsValid = true;
-          periodIsValid = true;
+        eIsValid = true;
+        periodIsValid = true;
         break;
       case '.':
 	return validateFraction(jsonString, cursor, length);
@@ -338,24 +336,11 @@ bool validateJSONElement(const char *jsonString, int *cursor, int length)
         return validateArray(jsonString, cursor, length);
       case '"':
         return validateString(jsonString, cursor, length);
-      case '1':
-      case '2':
-      case '3':
-      case '4':
-      case '5':
-      case '6':
-      case '7':
-      case '8':
-      case '9':
-      case '0':
-	return validateNumber(jsonString, cursor, length);
-      case '-':
-	return validateNegativeNumber(jsonString, cursor, length);
       case 't':
       case 'f':
         return validateBoolean(jsonString, cursor, length);
       default:
-        return false;
+        return validateNumber(jsonString, cursor, length);
     }
   }
 }
