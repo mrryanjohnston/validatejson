@@ -139,9 +139,6 @@ bool validateString(const char *jsonString, int *cursor, int length)
             )) return false;
           }
         }
-      case '\t':
-      case '\n':
-      case '\r':
       default:
         break;
     }
