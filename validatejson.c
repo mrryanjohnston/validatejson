@@ -34,12 +34,13 @@ bool validateObject(const char *jsonString, int *cursor, int length)
         valueIsValid = true;
         break;
       case '"':
-        if (!keyIsValid) break;
-        if (!validateString(jsonString, cursor, length)) return false;
-        colonIsValid = true;
-        keyIsValid = false;
-        rightBraceIsValid = false;
-        break;
+        if (keyIsValid) {
+          if (!validateString(jsonString, cursor, length)) return false;
+          colonIsValid = true;
+          keyIsValid = false;
+          rightBraceIsValid = false;
+          break;
+	}
       default:
         if (
 	  !valueIsValid ||
