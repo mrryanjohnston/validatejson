@@ -39,7 +39,7 @@ Example:
         validatejson '{ "foo": [ 1, 2, "Bar!" ] }'
 ```
 
-To validate a string of potention json, pass it as the first argument:
+To validate a string of potential json, pass it as the first argument:
 
 ```
 $ ./validatejson '{ "foo": [ 1, 2, "Bar!" ] }'
