@@ -75,6 +75,9 @@ $ make clean
 rm validatejson validatejson.o
 ```
 
+If you find a bug, add a file containing valid or invalid JSON
+to either the `tests/valid` or `tests/invalid` directories.
+
 ## Testing
 
 To compile and run the "test suite:"
@@ -90,6 +93,8 @@ PASS
 rm ./tests/test
 ```
 
-Add examples of valid or invalid JSON
-by creating a file in either the `tests/valid`
-or `tests/invalid` directories.
+## Profiling
+
+Use `make profile` to see 
+[the output from `gprof`](https://ftp.gnu.org/old-gnu/Manuals/gprof-2.9.1/html_chapter/gprof_5.html).
+of running the test suite.

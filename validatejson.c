@@ -120,7 +120,7 @@ bool validateString(const char *jsonString, int *cursor, int length)
           // From https://github.com/zserge/jsmn/blob/25647e692c7906b96ffd2b05ca54c097948e879c/jsmn.h#L241-L251
           for (int x = 0; x < 4; (*cursor)++ && x++)
           {
-	    int c = jsonString[(*cursor) + 1];
+            int c = jsonString[(*cursor) + 1];
             if (!(
                  (c >= 48 && c <= 57) || /* 0-9 */
                  (c >= 65 && c <= 70) || /* A-F */

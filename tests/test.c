@@ -52,7 +52,7 @@ int main()
 		}
 	}
 	closedir(dirp);
-	chdir("..");
+	chdir("../..");
 
 	printf("PASS\n");
 	return 0;

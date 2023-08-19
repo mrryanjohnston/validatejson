@@ -8,6 +8,8 @@ profile:
 	gcc -c -pg validatejson.c
 	gcc -pg -o tests/test tests/test.c validatejson.o
 	./tests/test
+	gprof tests/test
+	rm validatejson.o tests/test gmon.out
 validatejson.o:
 	gcc -c validatejson.c
 clean:
