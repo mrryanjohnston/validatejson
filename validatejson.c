@@ -40,15 +40,10 @@ bool validateObject(const char *jsonString, int *cursor, int length)
 {
   (*cursor)++;
   skipWhitespace(jsonString, cursor, length);
-  switch (jsonString[*cursor])
-  {
-    case '}':
-      return true;
-    default:
-      return validateObjectKey(jsonString, cursor, length) &&
-             (*cursor)++ &&
-             validateObjectValue(jsonString, cursor, length);
-  }
+  return jsonString[*cursor] == '}' ||
+         validateObjectKey(jsonString, cursor, length) &&
+         (*cursor)++ &&
+         validateObjectValue(jsonString, cursor, length);
 }
 
 bool validateEndOfArray(const char *jsonString, int *cursor, int length)
