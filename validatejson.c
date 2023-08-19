@@ -3,90 +3,79 @@
 #include <string.h>
 #include "validatejson.h"
 
+void skipWhitespace(const char *jsonString, int *cursor, int length)
+{
+  while (
+    *cursor < length && (
+      jsonString[*cursor] == ' ' ||
+      jsonString[*cursor] == '\t' ||
+      jsonString[*cursor] == '\r' ||
+      jsonString[*cursor] == '\n'
+    )
+  )
+  {
+    (*cursor)++;
+  }
+}
+
+bool validateObjectKey(const char *jsonString, int *cursor, int length)
+{
+  if (!validateString(jsonString, cursor, length)) return false;
+  (*cursor)++;
+  skipWhitespace(jsonString, cursor, length);
+  return jsonString[*cursor] == ':';
+}
+
+bool validateObjectValue(const char *jsonString, int *cursor, int length)
+{
+  if (!validateJSONElement(jsonString, cursor, length)) return false;
+  (*cursor)++;
+  skipWhitespace(jsonString, cursor, length);
+  switch (jsonString[*cursor])
+  {
+    case ',':
+      return validateObject(jsonString, cursor, length);
+    case '}':
+      return true;
+    default:
+      return false;
+  }
+}
+
 bool validateObject(const char *jsonString, int *cursor, int length)
 {
   (*cursor)++;
-  bool colonIsValid = false;
-  bool commaIsValid = false;
-  bool keyIsValid = true;
-  bool rightBraceIsValid = true;
-  bool valueIsValid = false;
-  for (; *cursor < length; (*cursor)++)
+  skipWhitespace(jsonString, cursor, length);
+  switch (jsonString[*cursor])
   {
-    switch (jsonString[*cursor])
-    {
-      case ' ':
-      case '\t':
-      case '\r':
-      case '\n':
-        break;
-      case '}':
-        return rightBraceIsValid;
-      case ',':
-        if (!commaIsValid) return false;
-        commaIsValid = false;
-        keyIsValid = true;
-        rightBraceIsValid = false;
-        break;
-      case ':':
-        if (!colonIsValid) return false;
-        colonIsValid = false;
-        valueIsValid = true;
-        break;
-      case '"':
-        if (keyIsValid) {
-          if (!validateString(jsonString, cursor, length)) return false;
-          colonIsValid = true;
-          keyIsValid = false;
-          rightBraceIsValid = false;
-          break;
-	}
-      default:
-        if (
-	  !valueIsValid ||
-	  !validateJSONElement(jsonString, cursor, length)
-        ) return false;
-        commaIsValid = true;
-        rightBraceIsValid = true;
-        valueIsValid = false;
-        break;
-    }
+    case '}':
+      return true;
+    default:
+      return validateObjectKey(jsonString, cursor, length) &&
+             (*cursor)++ &&
+             validateObjectValue(jsonString, cursor, length);
   }
-  return false;
+}
+
+bool validateEndOfArray(const char *jsonString, int *cursor, int length)
+{
+  skipWhitespace(jsonString, cursor, length);
+  return jsonString[*cursor] == ']' ||
+         jsonString[*cursor] == ',' &&
+         (*cursor)++ &&
+         validateJSONElement(jsonString, cursor, length) &&
+         (*cursor)++ &&
+         validateEndOfArray(jsonString, cursor, length);
 }
 
 bool validateArray(const char *jsonString, int *cursor, int length)
 {
   (*cursor)++;
-  bool rightBracketIsValid = true;
-  bool commaIsValid = false;
-  for (; *cursor < length; (*cursor)++)
-  {
-    switch (jsonString[*cursor])
-    {
-      case ' ':
-      case '\t':
-      case '\r':
-      case '\n':
-        break;
-      case ']':
-       return rightBracketIsValid;
-      case ',':
-        if (!commaIsValid) return false;
-        commaIsValid = false;
-        rightBracketIsValid = false;
-        break;
-      default:
-        if (
-	  (rightBracketIsValid && commaIsValid) ||
-          !validateJSONElement(jsonString, cursor, length)
-	) return false;
-        commaIsValid = true;
-        rightBracketIsValid = true;
-        break;
-    }
-  }
-  return false;
+  skipWhitespace(jsonString, cursor, length);
+  return jsonString[*cursor] == ']' ||
+         validateJSONElement(jsonString, cursor, length) &&
+         (*cursor)++ &&
+         validateEndOfArray(jsonString, cursor, length);
 }
 
 bool validateBoolean(const char *jsonString, int *cursor, int length)
@@ -157,9 +146,9 @@ bool validateExponent(const char *jsonString, int *cursor, int length)
     {
       case '+':
       case '-':
-	if (numberIsValid) return false;
-	numberIsValid = true;
-	break;
+        if (numberIsValid) return false;
+        numberIsValid = true;
+        break;
       case '1':
       case '2':
       case '3':
@@ -170,8 +159,8 @@ bool validateExponent(const char *jsonString, int *cursor, int length)
       case '8':
       case '9':
       case '0':
-	if (!numberIsValid) return false;
-	canReturn = true;
+        if (!numberIsValid) return false;
+        canReturn = true;
         break;
       case '}':
       case ']':
@@ -181,10 +170,10 @@ bool validateExponent(const char *jsonString, int *cursor, int length)
       case '\r':
       case '\n':
       case '\0':
-	(*cursor)--;
-	return canReturn;
+        (*cursor)--;
+        return canReturn;
       default:
-	return false;
+        return false;
     }
   }
 }
@@ -208,12 +197,12 @@ bool validateFraction(const char *jsonString, int *cursor, int length)
       case '8':
       case '9':
       case '0':
-	eIsValid = true;
-	canReturn = true;
+        eIsValid = true;
+        canReturn = true;
         break;
       case 'e':
       case 'E':
-	return eIsValid && validateExponent(jsonString, cursor, length);
+        return eIsValid && validateExponent(jsonString, cursor, length);
       case '}':
       case ']':
       case ',':
@@ -222,10 +211,10 @@ bool validateFraction(const char *jsonString, int *cursor, int length)
       case '\r':
       case '\n':
       case '\0':
-	(*cursor)--;
-	return canReturn;
+        (*cursor)--;
+        return canReturn;
       default:
-	return false;
+        return false;
     }
   }
 }
@@ -254,10 +243,10 @@ bool validateNumber(const char *jsonString, int *cursor, int length)
         periodIsValid = true;
         break;
       case '.':
-	return periodIsValid && validateFraction(jsonString, cursor, length);
+        return periodIsValid && validateFraction(jsonString, cursor, length);
       case 'e':
       case 'E':
-	return eIsValid && validateExponent(jsonString, cursor, length);
+        return eIsValid && validateExponent(jsonString, cursor, length);
       case '}':
       case ']':
       case ',':
@@ -265,8 +254,8 @@ bool validateNumber(const char *jsonString, int *cursor, int length)
       case '\t':
       case '\r':
       case '\n':
+        (*cursor)--;
       case '\0':
-	(*cursor)--;
         return true;
       default:
         return false;
@@ -278,15 +267,11 @@ bool validateNumber(const char *jsonString, int *cursor, int length)
 
 bool validateJSONElement(const char *jsonString, int *cursor, int length)
 {
+  skipWhitespace(jsonString, cursor, length);
   for (; *cursor < length; (*cursor)++)
   {
     switch (jsonString[*cursor])
     {
-      case ' ':
-      case '\t':
-      case '\r':
-      case '\n':
-        break;
       case '"':
         return validateString(jsonString, cursor, length);
       case '[':
@@ -315,15 +300,15 @@ bool validateJSONString(const char *jsonString, int *cursor, int length)
       case '\n':
         break;
       default:
-	if (
-	  !elementIsValid ||
-          !validateJSONElement(jsonString, cursor, length)
-	) return false;
-	elementIsValid = false;
-	break;
+       if (
+         !elementIsValid ||
+         !validateJSONElement(jsonString, cursor, length)
+       ) return false;
+       elementIsValid = false;
+       break;
     }
   }
-  return true;
+  return true;  
 }
 
 bool validateJSON(const char *jsonString) {
