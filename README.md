@@ -47,8 +47,9 @@ PASS
 ```
 
 To use the `validateJSON` function in your C code, copy the
-`validatejson.h` and `validatejson.c` files in the same directory
-as your C file:
+`validatejson.h` and `validatejson.c` files into the same directory
+as your C file. Here is an example C file that uses the `validateJSON`
+function:
 
 ```c
 #include "validatejson.h"
