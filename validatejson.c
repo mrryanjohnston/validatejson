@@ -31,15 +31,9 @@ bool validateObjectValue(const char *jsonString, int *cursor, int length)
   if (!validateJSONElement(jsonString, cursor, length)) return false;
   (*cursor)++;
   skipWhitespace(jsonString, cursor, length);
-  switch (jsonString[*cursor])
-  {
-    case ',':
-      return validateObject(jsonString, cursor, length);
-    case '}':
-      return true;
-    default:
-      return false;
-  }
+  return jsonString[*cursor] == '}' ||
+         jsonString[*cursor] == ',' &&
+         validateObject(jsonString, cursor, length);
 }
 
 bool validateObject(const char *jsonString, int *cursor, int length)
