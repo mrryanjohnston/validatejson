@@ -124,12 +124,8 @@ bool validateString(const char *jsonString, int *cursor, int length)
   return false;
 }
 
-bool validateExponent(const char *jsonString, int *cursor, int length)
+void skipInteger(const char *jsonString, int *cursor, int length)
 {
-  (*cursor)++;
-  if (!(jsonString[*cursor] == '-' || jsonString[*cursor] == '+')) return false;
-  (*cursor)++;
-  if (!(jsonString[*cursor] >= 48 && jsonString[*cursor] <= 57)) return false;
   while (
     *cursor < length &&
     jsonString[*cursor] >= 48 &&
@@ -138,6 +134,15 @@ bool validateExponent(const char *jsonString, int *cursor, int length)
   {
     (*cursor)++;
   }
+}
+
+bool validateExponent(const char *jsonString, int *cursor, int length)
+{
+  (*cursor)++;
+  if (!(jsonString[*cursor] == '-' || jsonString[*cursor] == '+')) return false;
+  (*cursor)++;
+  if (!(jsonString[*cursor] >= 48 && jsonString[*cursor] <= 57)) return false;
+  skipInteger(jsonString, cursor, length);
   switch (jsonString[*cursor])
   {
     case '}':
@@ -159,14 +164,7 @@ bool validateFraction(const char *jsonString, int *cursor, int length)
 {
   (*cursor)++;
   if (!(jsonString[*cursor] >= 48 && jsonString[*cursor] <= 57)) return false;
-  while (
-    *cursor < length &&
-    jsonString[*cursor] >= 48 &&
-    jsonString[*cursor] <= 57
-  )
-  {
-    (*cursor)++;
-  }
+  skipInteger(jsonString, cursor, length);
   switch (jsonString[*cursor])
   {
     case 'e':
@@ -190,14 +188,7 @@ bool validateFraction(const char *jsonString, int *cursor, int length)
 bool validateNumber(const char *jsonString, int *cursor, int length)
 {
   if (jsonString[*cursor] == '-') (*cursor)++;
-  while (
-    *cursor < length &&
-    jsonString[*cursor] >= 48 &&
-    jsonString[*cursor] <= 57
-  )
-  {
-    (*cursor)++;
-  }
+  skipInteger(jsonString, cursor, length);
   switch (jsonString[*cursor])
   {
     case '.':
