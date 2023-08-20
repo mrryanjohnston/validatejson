@@ -61,14 +61,28 @@ bool validateArray(const char *jsonString, int *cursor, int length)
 bool validateBoolean(const char *jsonString, int *cursor, int length)
 {
   if (
-      (*cursor) < length &&
-      jsonString[*cursor] == 't' &&
-      jsonString[(*cursor) + 1] == 'r' &&
-      jsonString[(*cursor) + 2] == 'u' &&
-      jsonString[(*cursor) + 3] == 'e')
+       (*cursor) < length &&
+       (
+         jsonString[*cursor] == 't' &&
+         jsonString[(*cursor) + 1] == 'r' &&
+         jsonString[(*cursor) + 2] == 'u' &&
+         jsonString[(*cursor) + 3] == 'e') ||
+       (
+         jsonString[*cursor] == 'n' &&
+         jsonString[(*cursor) + 1] == 'u' &&
+         jsonString[(*cursor) + 2] == 'l' &&
+         jsonString[(*cursor) + 3] == 'l')
+     )
   {
     *cursor = (*cursor) + 3;
     return true;
+  } else if (
+      (*cursor) < length &&
+      jsonString[*cursor] == 'n' &&
+      jsonString[(*cursor) + 1] == 'u' &&
+      jsonString[(*cursor) + 2] == 'l' &&
+      jsonString[(*cursor) + 3] == 'l')
+  {
   } else if (
       ((*cursor) + 1) < length &&
       jsonString[*cursor] == 'f' &&
@@ -215,6 +229,7 @@ bool validateJSONElement(const char *jsonString, int *cursor, int length)
       return validateObject(jsonString, cursor, length);
     case 't':
     case 'f':
+    case 'n':
       return validateBoolean(jsonString, cursor, length);
     default:
       return validateNumber(jsonString, cursor, length);
