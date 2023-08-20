@@ -41,7 +41,6 @@ bool validateObject(const char *jsonString, int *cursor, int length)
   (*cursor)++;
   skipWhitespace(jsonString, cursor, length);
   return jsonString[*cursor] == '}' ||
-         skipWhitespace(jsonString, cursor, length) &&
          validateString(jsonString, cursor, length) &&
          (*cursor)++ &&
          skipWhitespace(jsonString, cursor, length) &&
