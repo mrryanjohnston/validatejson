@@ -11,6 +11,4 @@ bool validateJSONString(const char *, int *, int);
 bool validateNegative(const char *, int *, int);
 bool validateNumber(const char *, int *, int);
 bool validateObject(const char *, int *, int);
-bool validateObjectKey(const char *, int *, int);
-bool validateObjectValue(const char *, int *, int);
 bool validateString(const char *, int *, int);

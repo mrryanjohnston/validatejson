@@ -3,7 +3,7 @@
 #include <string.h>
 #include "validatejson.h"
 
-void skipWhitespace(const char *jsonString, int *cursor, int length)
+bool skipWhitespace(const char *jsonString, int *cursor, int length)
 {
   while (
     *cursor < length && (
@@ -16,24 +16,7 @@ void skipWhitespace(const char *jsonString, int *cursor, int length)
   {
     (*cursor)++;
   }
-}
-
-bool validateObjectKey(const char *jsonString, int *cursor, int length)
-{
-  if (!validateString(jsonString, cursor, length)) return false;
-  (*cursor)++;
-  skipWhitespace(jsonString, cursor, length);
-  return jsonString[*cursor] == ':';
-}
-
-bool validateObjectValue(const char *jsonString, int *cursor, int length)
-{
-  if (!validateJSONElement(jsonString, cursor, length)) return false;
-  (*cursor)++;
-  skipWhitespace(jsonString, cursor, length);
-  return jsonString[*cursor] == '}' ||
-         jsonString[*cursor] == ',' &&
-         validateObject(jsonString, cursor, length);
+  return true;
 }
 
 bool validateObject(const char *jsonString, int *cursor, int length)
@@ -41,9 +24,17 @@ bool validateObject(const char *jsonString, int *cursor, int length)
   (*cursor)++;
   skipWhitespace(jsonString, cursor, length);
   return jsonString[*cursor] == '}' ||
-         validateObjectKey(jsonString, cursor, length) &&
+         validateString(jsonString, cursor, length) &&
          (*cursor)++ &&
-         validateObjectValue(jsonString, cursor, length);
+         skipWhitespace(jsonString, cursor, length) &&
+         jsonString[*cursor] == ':' &&
+         (*cursor)++ &&
+         validateJSONElement(jsonString, cursor, length) &&
+         (*cursor)++ &&
+         skipWhitespace(jsonString, cursor, length) &&
+         jsonString[*cursor] == '}' ||
+         jsonString[*cursor] == ',' &&
+         validateObject(jsonString, cursor, length);
 }
 
 bool validateEndOfArray(const char *jsonString, int *cursor, int length)
