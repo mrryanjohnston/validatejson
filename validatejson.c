@@ -153,6 +153,20 @@ void skipInteger(const char *jsonString, int *cursor, int length)
   }
 }
 
+bool validateEndOfNumber(const char *jsonString, int *cursor, int length)
+{
+  return (
+    jsonString[*cursor] == '}' ||
+    jsonString[*cursor] == ']' ||
+    jsonString[*cursor] == ',' ||
+    jsonString[*cursor] == ' ' ||
+    jsonString[*cursor] == '\t' ||
+    jsonString[*cursor] == '\r' ||
+    jsonString[*cursor] == '\n' ||
+    jsonString[*cursor] == '\0') &&
+    (*cursor)--;
+}
+
 bool validateExponent(const char *jsonString, int *cursor, int length)
 {
   (*cursor)++;
@@ -160,21 +174,7 @@ bool validateExponent(const char *jsonString, int *cursor, int length)
   (*cursor)++;
   if (!(jsonString[*cursor] >= 48 && jsonString[*cursor] <= 57)) return false;
   skipInteger(jsonString, cursor, length);
-  switch (jsonString[*cursor])
-  {
-    case '}':
-    case ']':
-    case ',':
-    case ' ':
-    case '\t':
-    case '\r':
-    case '\n':
-    case '\0':
-      (*cursor)--;
-      return true;
-    default:
-      return false;
-  }
+  return validateEndOfNumber(jsonString, cursor, length);
 }
 
 bool validateFraction(const char *jsonString, int *cursor, int length)
@@ -182,50 +182,20 @@ bool validateFraction(const char *jsonString, int *cursor, int length)
   (*cursor)++;
   if (!(jsonString[*cursor] >= 48 && jsonString[*cursor] <= 57)) return false;
   skipInteger(jsonString, cursor, length);
-  switch (jsonString[*cursor])
-  {
-    case 'e':
-    case 'E':
-      return validateExponent(jsonString, cursor, length);
-    case '}':
-    case ']':
-    case ',':
-    case ' ':
-    case '\t':
-    case '\r':
-    case '\n':
-    case '\0':
-      (*cursor)--;
-      return true;
-    default:
-      return false;
-  }
+  if (jsonString[*cursor] == 'e' || jsonString[*cursor] == 'E')
+    return validateExponent(jsonString, cursor, length);
+  return validateEndOfNumber(jsonString, cursor, length);
 }
 
 bool validateNumber(const char *jsonString, int *cursor, int length)
 {
   if (jsonString[*cursor] == '-') (*cursor)++;
   skipInteger(jsonString, cursor, length);
-  switch (jsonString[*cursor])
-  {
-    case '.':
-      return validateFraction(jsonString, cursor, length);
-    case 'e':
-    case 'E':
-      return validateExponent(jsonString, cursor, length);
-    case '}':
-    case ']':
-    case ',':
-    case ' ':
-    case '\t':
-    case '\r':
-    case '\n':
-      (*cursor)--;
-    case '\0':
-      return true;
-    default:
-      return false;
-  }
+  if (jsonString[*cursor] == '.')
+    return validateFraction(jsonString, cursor, length);
+  if (jsonString[*cursor] == 'e' || jsonString[*cursor] == 'E')
+    return validateExponent(jsonString, cursor, length);
+  return validateEndOfNumber(jsonString, cursor, length);
 }
 
 bool validateJSONElement(const char *jsonString, int *cursor, int length)
