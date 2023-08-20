@@ -19,32 +19,46 @@ bool skipWhitespace(const char *jsonString, int *cursor, int length)
   return true;
 }
 
-bool validateObject(const char *jsonString, int *cursor, int length)
+bool validateEndOfObject(const char *jsonString, int *cursor, int length)
 {
   (*cursor)++;
   skipWhitespace(jsonString, cursor, length);
   return jsonString[*cursor] == '}' ||
+         jsonString[*cursor] == ',' &&
+         (*cursor)++ &&
+         skipWhitespace(jsonString, cursor, length) &&
          validateString(jsonString, cursor, length) &&
          (*cursor)++ &&
          skipWhitespace(jsonString, cursor, length) &&
          jsonString[*cursor] == ':' &&
          (*cursor)++ &&
          validateJSONElement(jsonString, cursor, length) &&
+         validateEndOfObject(jsonString, cursor, length);
+}
+
+bool validateObject(const char *jsonString, int *cursor, int length)
+{
+  (*cursor)++;
+  skipWhitespace(jsonString, cursor, length);
+  return jsonString[*cursor] == '}' ||
+         skipWhitespace(jsonString, cursor, length) &&
+         validateString(jsonString, cursor, length) &&
          (*cursor)++ &&
          skipWhitespace(jsonString, cursor, length) &&
-         jsonString[*cursor] == '}' ||
-         jsonString[*cursor] == ',' &&
-         validateObject(jsonString, cursor, length);
+         jsonString[*cursor] == ':' &&
+         (*cursor)++ &&
+         validateJSONElement(jsonString, cursor, length) &&
+         validateEndOfObject(jsonString, cursor, length);
 }
 
 bool validateEndOfArray(const char *jsonString, int *cursor, int length)
 {
+  (*cursor)++ &&
   skipWhitespace(jsonString, cursor, length);
   return jsonString[*cursor] == ']' ||
          jsonString[*cursor] == ',' &&
          (*cursor)++ &&
          validateJSONElement(jsonString, cursor, length) &&
-         (*cursor)++ &&
          validateEndOfArray(jsonString, cursor, length);
 }
 
@@ -54,7 +68,6 @@ bool validateArray(const char *jsonString, int *cursor, int length)
   skipWhitespace(jsonString, cursor, length);
   return jsonString[*cursor] == ']' ||
          validateJSONElement(jsonString, cursor, length) &&
-         (*cursor)++ &&
          validateEndOfArray(jsonString, cursor, length);
 }
 

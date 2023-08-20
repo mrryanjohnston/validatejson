@@ -3,6 +3,7 @@
 bool validateArray(const char *, int *, int);
 bool validateBoolean(const char *, int *, int);
 bool validateEndOfArray(const char *, int *, int);
+bool validateEndOfObject(const char *, int *, int);
 bool validateExponent(const char *, int *, int);
 bool validateFraction(const char *, int *, int);
 bool validateJSON(const char *);
