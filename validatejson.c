@@ -205,22 +205,19 @@ bool validateNumber(const char *jsonString, int *cursor, int length)
 bool validateJSONElement(const char *jsonString, int *cursor, int length)
 {
   skipWhitespace(jsonString, cursor, length);
-  for (; *cursor < length; (*cursor)++)
+  switch (jsonString[*cursor])
   {
-    switch (jsonString[*cursor])
-    {
-      case '"':
-        return validateString(jsonString, cursor, length);
-      case '[':
-        return validateArray(jsonString, cursor, length);
-      case '{':
-        return validateObject(jsonString, cursor, length);
-      case 't':
-      case 'f':
-        return validateBoolean(jsonString, cursor, length);
-      default:
-        return validateNumber(jsonString, cursor, length);
-    }
+    case '"':
+      return validateString(jsonString, cursor, length);
+    case '[':
+      return validateArray(jsonString, cursor, length);
+    case '{':
+      return validateObject(jsonString, cursor, length);
+    case 't':
+    case 'f':
+      return validateBoolean(jsonString, cursor, length);
+    default:
+      return validateNumber(jsonString, cursor, length);
   }
 }
 
