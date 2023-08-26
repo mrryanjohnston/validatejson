@@ -113,7 +113,7 @@ bool validateString(const char *jsonString, int *cursor, int length)
   return false;
 }
 
-void skipInteger(const char *jsonString, int *cursor, int length)
+bool skipInteger(const char *jsonString, int *cursor, int length)
 {
   while (
     *cursor < length &&
@@ -123,6 +123,7 @@ void skipInteger(const char *jsonString, int *cursor, int length)
   {
     (*cursor)++;
   }
+  return true;
 }
 
 bool validateEndOfNumber(const char *jsonString, int *cursor, int length)
@@ -141,33 +142,38 @@ bool validateEndOfNumber(const char *jsonString, int *cursor, int length)
 
 bool validateExponent(const char *jsonString, int *cursor, int length)
 {
-  (*cursor)++;
-  if (!(jsonString[*cursor] == '-' || jsonString[*cursor] == '+')) return false;
-  (*cursor)++;
-  if (!(jsonString[*cursor] >= 48 && jsonString[*cursor] <= 57)) return false;
-  skipInteger(jsonString, cursor, length);
-  return validateEndOfNumber(jsonString, cursor, length);
+  return (
+           jsonString[*cursor] != 'e' &&
+           jsonString[*cursor] != 'E'
+         ) ||
+         (*cursor)++ &&
+         (
+           jsonString[*cursor] == '-' ||
+           jsonString[*cursor] == '+'
+         ) &&
+         (*cursor)++ &&
+         jsonString[*cursor] >= 48 &&
+         jsonString[*cursor] <= 57 &&
+         skipInteger(jsonString, cursor, length);
 }
 
 bool validateFraction(const char *jsonString, int *cursor, int length)
 {
-  (*cursor)++;
-  if (!(jsonString[*cursor] >= 48 && jsonString[*cursor] <= 57)) return false;
-  skipInteger(jsonString, cursor, length);
-  if (jsonString[*cursor] == 'e' || jsonString[*cursor] == 'E')
-    return validateExponent(jsonString, cursor, length);
-  return validateEndOfNumber(jsonString, cursor, length);
+  return jsonString[*cursor] != '.' ||
+         (*cursor)++ &&
+         jsonString[*cursor] >= 48 &&
+         jsonString[*cursor] <= 57 &&
+         skipInteger(jsonString, cursor, length);
 }
 
 bool validateNumber(const char *jsonString, int *cursor, int length)
 {
-  if (jsonString[*cursor] == '-') (*cursor)++;
-  skipInteger(jsonString, cursor, length);
-  if (jsonString[*cursor] == '.')
-    return validateFraction(jsonString, cursor, length);
-  if (jsonString[*cursor] == 'e' || jsonString[*cursor] == 'E')
-    return validateExponent(jsonString, cursor, length);
-  return validateEndOfNumber(jsonString, cursor, length);
+  return jsonString[*cursor] >= 48 &&
+         jsonString[*cursor] <= 57 &&
+         skipInteger(jsonString, cursor, length) &&
+         validateFraction(jsonString, cursor, length) &&
+         validateExponent(jsonString, cursor, length) &&
+         validateEndOfNumber(jsonString, cursor, length);
 }
 
 bool validateJSONElement(const char *jsonString, int *cursor, int length)
@@ -185,6 +191,8 @@ bool validateJSONElement(const char *jsonString, int *cursor, int length)
     case 'f':
     case 'n':
       return validateBoolean(jsonString, cursor, length);
+    case '-':
+      (*cursor)++;
     default:
       return validateNumber(jsonString, cursor, length);
   }
