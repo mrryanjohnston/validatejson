@@ -89,13 +89,6 @@ bool validateBoolean(const char *jsonString, int *cursor, int length)
     *cursor = (*cursor) + 3;
     return true;
   } else if (
-      (*cursor) < length &&
-      jsonString[*cursor] == 'n' &&
-      jsonString[(*cursor) + 1] == 'u' &&
-      jsonString[(*cursor) + 2] == 'l' &&
-      jsonString[(*cursor) + 3] == 'l')
-  {
-  } else if (
       ((*cursor) + 1) < length &&
       jsonString[*cursor] == 'f' &&
       jsonString[(*cursor) + 1] == 'a' &&
