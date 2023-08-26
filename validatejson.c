@@ -72,34 +72,13 @@ bool validateArray(const char *jsonString, int *cursor, int length)
 
 bool validateBoolean(const char *jsonString, int *cursor, int length)
 {
-  if (
-       (*cursor) < length &&
-       (
-         jsonString[*cursor] == 't' &&
-         jsonString[(*cursor) + 1] == 'r' &&
-         jsonString[(*cursor) + 2] == 'u' &&
-         jsonString[(*cursor) + 3] == 'e') ||
-       (
-         jsonString[*cursor] == 'n' &&
-         jsonString[(*cursor) + 1] == 'u' &&
-         jsonString[(*cursor) + 2] == 'l' &&
-         jsonString[(*cursor) + 3] == 'l')
-     )
-  {
-    *cursor = (*cursor) + 3;
-    return true;
-  } else if (
-      ((*cursor) + 1) < length &&
-      jsonString[*cursor] == 'f' &&
-      jsonString[(*cursor) + 1] == 'a' &&
-      jsonString[(*cursor) + 2] == 'l' &&
-      jsonString[(*cursor) + 3] == 's' &&
-      jsonString[(*cursor) + 4] == 'e')
-  {
-    *cursor = (*cursor) + 4;
-    return true;
-  }
-  return false;
+  return (
+      strncmp(jsonString + (*cursor), "true", 4) == 0 ||
+      strncmp(jsonString + (*cursor), "null", 4) == 0
+    ) &&
+    (*cursor = (*cursor) + 3) ||
+    strncmp(jsonString + (*cursor), "false", 5) == 0 &&
+    (*cursor = (*cursor) + 4);
 }
 
 bool validateString(const char *jsonString, int *cursor, int length)
