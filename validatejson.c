@@ -199,10 +199,7 @@ bool validateJSONElement(const char *jsonString, int *cursor, int length)
 
 bool validateJSONString(const char *jsonString, int *cursor, int length)
 {
-  return length == 0 ||
-    skipWhitespace(jsonString, cursor, length) &&
-    (*cursor) == length ||
-    validateJSONElement(jsonString, cursor, length) &&
+  return validateJSONElement(jsonString, cursor, length) &&
     (
       (*cursor) == length ||
       ++(*cursor) &&
