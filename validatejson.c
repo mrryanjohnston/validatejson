@@ -134,10 +134,13 @@ bool validateExponent(const char *jsonString, int *cursor, int length)
          ) ||
          (*cursor)++ &&
          (
-           jsonString[*cursor] == '-' ||
-           jsonString[*cursor] == '+'
+           (
+             jsonString[*cursor] == '-' ||
+             jsonString[*cursor] == '+'
+           ) &&
+           (*cursor)++ ||
+           true
          ) &&
-         (*cursor)++ &&
          jsonString[*cursor] >= 48 &&
          jsonString[*cursor] <= 57 &&
          skipInteger(jsonString, cursor, length);
@@ -196,26 +199,15 @@ bool validateJSONElement(const char *jsonString, int *cursor, int length)
 
 bool validateJSONString(const char *jsonString, int *cursor, int length)
 {
-  bool elementIsValid = true;
-  for (; *cursor < length; (*cursor)++)
-  {
-    switch (jsonString[*cursor])
-    {
-      case ' ':
-      case '\t':
-      case '\r':
-      case '\n':
-        break;
-      default:
-       if (
-         !elementIsValid ||
-         !validateJSONElement(jsonString, cursor, length)
-       ) return false;
-       elementIsValid = false;
-       break;
-    }
-  }
-  return true;  
+  return length == 0 ||
+    skipWhitespace(jsonString, cursor, length) &&
+    (*cursor) == length ||
+    validateJSONElement(jsonString, cursor, length) &&
+    (
+      (*cursor) == length ||
+      ++(*cursor) &&
+      skipWhitespace(jsonString, cursor, length) &&
+      (*cursor) == length);
 }
 
 bool validateJSON(const char *jsonString) {
