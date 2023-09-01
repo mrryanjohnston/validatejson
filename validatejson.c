@@ -84,33 +84,32 @@ bool validateBoolean(const char *jsonString, int *cursor, int length)
 bool validateString(const char *jsonString, int *cursor, int length)
 {
   (*cursor)++;
-  for (; *cursor < length; (*cursor)++)
+  while (
+    *cursor < length &&
+    jsonString[*cursor] != '"'
+  )
   {
-    switch (jsonString[*cursor])
+    if (jsonString[*cursor] == '\\')
     {
-      case '"':
-        return true;
-      case '\\':
-        (*cursor)++;
-        if (jsonString[*cursor] == 'u')
+      (*cursor)++;
+      if (jsonString[*cursor] == 'u')
+      {
+        if ((*cursor) + 4 > length) return false;
+        // From https://github.com/zserge/jsmn/blob/25647e692c7906b96ffd2b05ca54c097948e879c/jsmn.h#L241-L251
+        for (int x = 0; x < 4; (*cursor)++ && x++)
         {
-          if ((*cursor) + 4 > length) return false;
-          // From https://github.com/zserge/jsmn/blob/25647e692c7906b96ffd2b05ca54c097948e879c/jsmn.h#L241-L251
-          for (int x = 0; x < 4; (*cursor)++ && x++)
-          {
-            int c = jsonString[(*cursor) + 1];
-            if (!(
-                 (c >= 48 && c <= 57) || /* 0-9 */
-                 (c >= 65 && c <= 70) || /* A-F */
-                 (c >= 97 && c <= 102)   /* a-f */
-            )) return false;
-          }
+          int c = jsonString[(*cursor) + 1];
+          if (!(
+               (c >= 48 && c <= 57) || /* 0-9 */
+               (c >= 65 && c <= 70) || /* A-F */
+               (c >= 97 && c <= 102)   /* a-f */
+          )) return false;
         }
-      default:
-        break;
+      }
     }
+    (*cursor)++;
   }
-  return false;
+  return jsonString[*cursor] == '"';
 }
 
 bool skipInteger(const char *jsonString, int *cursor, int length)
