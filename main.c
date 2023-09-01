@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
   } else if (argc == 2) {
     if (!validateJSON(argv[1]))
     {
-      printf("ERROR: %s should be valid!\n", argv[1]);
+      printf("ERROR: %s is invalid!\n", argv[1]);
       return -1;
     }
     printf("PASS\n");

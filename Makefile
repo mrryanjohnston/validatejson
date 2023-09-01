@@ -3,7 +3,7 @@ all: validatejson.o
 test: validatejson.o
 	gcc -o tests/test tests/test.c validatejson.o
 	./tests/test
-	rm ./tests/test
+	rm ./tests/test validatejson.o
 profile:
 	gcc -c -pg validatejson.c
 	gcc -pg -o tests/test tests/test.c validatejson.o
