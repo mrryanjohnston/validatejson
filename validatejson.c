@@ -27,6 +27,7 @@ bool validateEndOfObject(const char *jsonString, int *cursor, int length)
          jsonString[*cursor] == ',' &&
          (*cursor)++ &&
          skipWhitespace(jsonString, cursor, length) &&
+         jsonString[*cursor] == '"' &&
          validateString(jsonString, cursor, length) &&
          (*cursor)++ &&
          skipWhitespace(jsonString, cursor, length) &&
@@ -41,6 +42,7 @@ bool validateObject(const char *jsonString, int *cursor, int length)
   (*cursor)++;
   skipWhitespace(jsonString, cursor, length);
   return jsonString[*cursor] == '}' ||
+         jsonString[*cursor] == '"' &&
          validateString(jsonString, cursor, length) &&
          (*cursor)++ &&
          skipWhitespace(jsonString, cursor, length) &&
