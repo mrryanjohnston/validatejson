@@ -12,10 +12,7 @@ bool skipWhitespace(const char *jsonString, int *cursor, int length)
       jsonString[*cursor] == '\r' ||
       jsonString[*cursor] == '\n'
     )
-  )
-  {
-    (*cursor)++;
-  }
+  ) (*cursor)++;
   return true;
 }
 
@@ -116,14 +113,11 @@ bool validateString(const char *jsonString, int *cursor, int length)
 
 bool skipInteger(const char *jsonString, int *cursor, int length)
 {
-  while (
+  do (*cursor)++; while (
     *cursor < length &&
     jsonString[*cursor] >= 48 &&
     jsonString[*cursor] <= 57
-  )
-  {
-    (*cursor)++;
-  }
+  );
   return true;
 }
 
@@ -201,11 +195,12 @@ bool validateJSONElement(const char *jsonString, int *cursor, int length)
 bool validateJSONString(const char *jsonString, int *cursor, int length)
 {
   return validateJSONElement(jsonString, cursor, length) &&
-    (
-      (*cursor) == length ||
-      ++(*cursor) &&
-      skipWhitespace(jsonString, cursor, length) &&
-      (*cursor) == length);
+         (
+           (*cursor) == length ||
+           ++(*cursor) &&
+           skipWhitespace(jsonString, cursor, length) &&
+           (*cursor) == length
+         );
 }
 
 bool validateJSON(const char *jsonString) {
