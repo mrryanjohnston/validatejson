@@ -85,13 +85,13 @@ To compile and run the "test suite:"
 
 ```
 $ make test
-gcc -c -o validatejson.o validatejson.c
+gcc -c validatejson.c
 gcc -o tests/test tests/test.c validatejson.o
 ./tests/test
 Test results:
 ================
 PASS
-rm ./tests/test
+rm ./tests/test validatejson.o
 ```
 
 ## Profiling
