@@ -111,9 +111,14 @@ bool validateString(const char *jsonString, int *cursor, int length)
   return jsonString[*cursor] == '"';
 }
 
-bool skipInteger(const char *jsonString, int *cursor, int length)
+bool validateAtLeastOneInteger(const char *jsonString, int *cursor, int length)
 {
-  do (*cursor)++; while (
+  if (
+    jsonString[*cursor] < 48 ||
+    jsonString[*cursor] > 57
+  ) return false;
+  do (*cursor)++;
+  while (
     *cursor < length &&
     jsonString[*cursor] >= 48 &&
     jsonString[*cursor] <= 57
@@ -136,25 +141,19 @@ bool validateExponent(const char *jsonString, int *cursor, int length)
            (*cursor)++ ||
            true
          ) &&
-         jsonString[*cursor] >= 48 &&
-         jsonString[*cursor] <= 57 &&
-         skipInteger(jsonString, cursor, length);
+         validateAtLeastOneInteger(jsonString, cursor, length);
 }
 
 bool validateFraction(const char *jsonString, int *cursor, int length)
 {
   return jsonString[*cursor] != '.' ||
          (*cursor)++ &&
-         jsonString[*cursor] >= 48 &&
-         jsonString[*cursor] <= 57 &&
-         skipInteger(jsonString, cursor, length);
+         validateAtLeastOneInteger(jsonString, cursor, length);
 }
 
 bool validateNumber(const char *jsonString, int *cursor, int length)
 {
-  return jsonString[*cursor] >= 48 &&
-         jsonString[*cursor] <= 57 &&
-         skipInteger(jsonString, cursor, length) &&
+  return validateAtLeastOneInteger(jsonString, cursor, length) &&
          validateFraction(jsonString, cursor, length) &&
          validateExponent(jsonString, cursor, length) &&
          (
