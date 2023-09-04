@@ -51,7 +51,7 @@ bool validateObject(const char *jsonString, int *cursor, int length)
 
 bool validateEndOfArray(const char *jsonString, int *cursor, int length)
 {
-  (*cursor)++ &&
+  (*cursor)++;
   skipWhitespace(jsonString, cursor, length);
   return jsonString[*cursor] == ']' ||
          jsonString[*cursor] == ',' &&
