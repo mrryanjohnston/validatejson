@@ -16,20 +16,24 @@ bool skipWhitespace(const char *jsonString, int *cursor, int length)
   return true;
 }
 
+bool validateCharAndAdvanceCursor(const char *jsonString, int *cursor, int length, char c)
+{
+  return jsonString[*cursor] == c &&
+         ++(*cursor);
+}
+
 bool validateEndOfObject(const char *jsonString, int *cursor, int length)
 {
   (*cursor)++;
   skipWhitespace(jsonString, cursor, length);
   return jsonString[*cursor] == '}' ||
-         jsonString[*cursor] == ',' &&
-         (*cursor)++ &&
+         validateCharAndAdvanceCursor(jsonString, cursor, length, ',') &&
          skipWhitespace(jsonString, cursor, length) &&
          jsonString[*cursor] == '"' &&
          validateString(jsonString, cursor, length) &&
          (*cursor)++ &&
          skipWhitespace(jsonString, cursor, length) &&
-         jsonString[*cursor] == ':' &&
-         (*cursor)++ &&
+         validateCharAndAdvanceCursor(jsonString, cursor, length, ':') &&
          validateJSONElement(jsonString, cursor, length) &&
          validateEndOfObject(jsonString, cursor, length);
 }
@@ -43,8 +47,7 @@ bool validateObject(const char *jsonString, int *cursor, int length)
          validateString(jsonString, cursor, length) &&
          (*cursor)++ &&
          skipWhitespace(jsonString, cursor, length) &&
-         jsonString[*cursor] == ':' &&
-         (*cursor)++ &&
+         validateCharAndAdvanceCursor(jsonString, cursor, length, ':') &&
          validateJSONElement(jsonString, cursor, length) &&
          validateEndOfObject(jsonString, cursor, length);
 }
@@ -54,8 +57,7 @@ bool validateEndOfArray(const char *jsonString, int *cursor, int length)
   (*cursor)++;
   skipWhitespace(jsonString, cursor, length);
   return jsonString[*cursor] == ']' ||
-         jsonString[*cursor] == ',' &&
-         (*cursor)++ &&
+         validateCharAndAdvanceCursor(jsonString, cursor, length, ',') &&
          validateJSONElement(jsonString, cursor, length) &&
          validateEndOfArray(jsonString, cursor, length);
 }
@@ -134,11 +136,8 @@ bool validateExponent(const char *jsonString, int *cursor, int length)
          ) ||
          (*cursor)++ &&
          (
-           (
-             jsonString[*cursor] == '-' ||
-             jsonString[*cursor] == '+'
-           ) &&
-           (*cursor)++ ||
+           validateCharAndAdvanceCursor(jsonString, cursor, length, '-') ||
+           validateCharAndAdvanceCursor(jsonString, cursor, length, '+') ||
            true
          ) &&
          validateAtLeastOneInteger(jsonString, cursor, length);
