@@ -3,23 +3,23 @@
 #include <string.h>
 #include "validatejson.h"
 
-bool skipWhitespace(const char *jsonString, int *cursor, int length)
-{
-  while (
-    *cursor < length && (
-      jsonString[*cursor] == ' ' ||
-      jsonString[*cursor] == '\t' ||
-      jsonString[*cursor] == '\r' ||
-      jsonString[*cursor] == '\n'
-    )
-  ) (*cursor)++;
-  return true;
-}
-
 bool validateCharAndAdvanceCursor(const char *jsonString, int *cursor, int length, char c)
 {
   return jsonString[*cursor] == c &&
          ++(*cursor);
+}
+
+bool skipWhitespace(const char *jsonString, int *cursor, int length)
+{
+  while (
+    *cursor < length && (
+      validateCharAndAdvanceCursor(jsonString, cursor, length, ' ') ||
+      validateCharAndAdvanceCursor(jsonString, cursor, length, '\t') ||
+      validateCharAndAdvanceCursor(jsonString, cursor, length, '\r') ||
+      validateCharAndAdvanceCursor(jsonString, cursor, length, '\n')
+    )
+  );
+  return true;
 }
 
 bool validateEndOfObject(const char *jsonString, int *cursor, int length)
