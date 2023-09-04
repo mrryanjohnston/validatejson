@@ -3,7 +3,7 @@
 #include <string.h>
 #include "validatejson.h"
 
-bool validateCharAndAdvanceCursor(const char *jsonString, int *cursor, int length, char c)
+bool validateCharAndAdvanceCursor(const char *jsonString, int *cursor, char c)
 {
   return jsonString[*cursor] == c &&
          ++(*cursor);
@@ -13,10 +13,10 @@ bool skipWhitespace(const char *jsonString, int *cursor, int length)
 {
   while (
     *cursor < length && (
-      validateCharAndAdvanceCursor(jsonString, cursor, length, ' ') ||
-      validateCharAndAdvanceCursor(jsonString, cursor, length, '\t') ||
-      validateCharAndAdvanceCursor(jsonString, cursor, length, '\r') ||
-      validateCharAndAdvanceCursor(jsonString, cursor, length, '\n')
+      validateCharAndAdvanceCursor(jsonString, cursor, ' ')  ||
+      validateCharAndAdvanceCursor(jsonString, cursor, '\t') ||
+      validateCharAndAdvanceCursor(jsonString, cursor, '\r') ||
+      validateCharAndAdvanceCursor(jsonString, cursor, '\n')
     )
   );
   return true;
@@ -27,13 +27,13 @@ bool validateEndOfObject(const char *jsonString, int *cursor, int length)
   (*cursor)++;
   skipWhitespace(jsonString, cursor, length);
   return jsonString[*cursor] == '}' ||
-         validateCharAndAdvanceCursor(jsonString, cursor, length, ',') &&
+         validateCharAndAdvanceCursor(jsonString, cursor, ',') &&
          skipWhitespace(jsonString, cursor, length) &&
          jsonString[*cursor] == '"' &&
          validateString(jsonString, cursor, length) &&
          (*cursor)++ &&
          skipWhitespace(jsonString, cursor, length) &&
-         validateCharAndAdvanceCursor(jsonString, cursor, length, ':') &&
+         validateCharAndAdvanceCursor(jsonString, cursor, ':') &&
          validateJSONElement(jsonString, cursor, length) &&
          validateEndOfObject(jsonString, cursor, length);
 }
@@ -47,7 +47,7 @@ bool validateObject(const char *jsonString, int *cursor, int length)
          validateString(jsonString, cursor, length) &&
          (*cursor)++ &&
          skipWhitespace(jsonString, cursor, length) &&
-         validateCharAndAdvanceCursor(jsonString, cursor, length, ':') &&
+         validateCharAndAdvanceCursor(jsonString, cursor, ':') &&
          validateJSONElement(jsonString, cursor, length) &&
          validateEndOfObject(jsonString, cursor, length);
 }
@@ -57,7 +57,7 @@ bool validateEndOfArray(const char *jsonString, int *cursor, int length)
   (*cursor)++;
   skipWhitespace(jsonString, cursor, length);
   return jsonString[*cursor] == ']' ||
-         validateCharAndAdvanceCursor(jsonString, cursor, length, ',') &&
+         validateCharAndAdvanceCursor(jsonString, cursor, ',') &&
          validateJSONElement(jsonString, cursor, length) &&
          validateEndOfArray(jsonString, cursor, length);
 }
@@ -136,8 +136,8 @@ bool validateExponent(const char *jsonString, int *cursor, int length)
          ) ||
          (*cursor)++ &&
          (
-           validateCharAndAdvanceCursor(jsonString, cursor, length, '-') ||
-           validateCharAndAdvanceCursor(jsonString, cursor, length, '+') ||
+           validateCharAndAdvanceCursor(jsonString, cursor, '-') ||
+           validateCharAndAdvanceCursor(jsonString, cursor, '+') ||
            true
          ) &&
          validateAtLeastOneInteger(jsonString, cursor, length);
