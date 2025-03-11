@@ -10,9 +10,16 @@ int main(int argc, char *argv[])
   }
   else if (argc == 2)
   {
-    if (!validateJSON(argv[1]))
+    const char *current = argv[1];
+    if (!validateJSON(&current))
     {
-      printf("ERROR: %s is invalid!\n", argv[1]);
+      int line = 1;
+      int character = 0;
+      printf("FAIL\nInvalid JSON found near: %s\n\n", current);
+      while (current != argv[1] && *current != '\n') { character++; current--; }
+      printf("Check json near character number %d", character);
+      while (current != argv[1]) { *current == '\n' && line++; current--; }
+      printf(" on line %d\n", line);
       return -1;
     }
     printf("PASS\n");

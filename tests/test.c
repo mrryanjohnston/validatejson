@@ -22,7 +22,8 @@ int main()
 		{
 			n = fread(buffer, sizeof(char), 10000, file);
 			buffer[n] = '\0';
-			if (!validateJSON(buffer))
+			const char *_buffer = buffer;
+			if (!validateJSON(&_buffer))
 			{
 				printf("ERROR: %s should be valid!\n", buffer);
 				fclose(file);
@@ -42,7 +43,8 @@ int main()
 		{
 			n = fread(buffer, sizeof(char), 10000, file);
 			buffer[n] = '\0';
-			if (validateJSON(buffer))
+			const char *_buffer = buffer;
+			if (validateJSON(&_buffer))
 			{
 				printf("ERROR: %s should be invalid!\n", buffer);
 				fclose(file);
