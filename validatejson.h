@@ -9,7 +9,6 @@ bool validateFraction(const char **);
 bool validateJSON(const char **);
 bool validateJSONElement(const char **);
 bool validateJSONString(const char **);
-bool validateNegative(const char **);
 bool validateNumber(const char **);
 bool validateObject(const char **);
 bool validateString(const char **);

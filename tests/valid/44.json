@@ -1,0 +1,128 @@
+{
+  "id": 12345,
+  "name": "ComplexTestData",
+  "meta": {
+    "created": "2025-04-06T12:00:00Z",
+    "active": true,
+    "tags": ["test", "json", "complex"],
+    "metrics": {
+      "views": 1024,
+      "likes": 256,
+      "engagement": {
+        "clickRate": 0.75,
+        "conversionRate": 0.2,
+        "details": [
+          {
+            "region": "NA",
+            "impressions": 500,
+            "clicks": 300
+          },
+          {
+            "region": "EU",
+            "impressions": 524,
+            "clicks": 354
+          }
+        ]
+      }
+    }
+  },
+  "data": [
+    {
+      "itemId": "A1",
+      "value": "Alpha",
+      "properties": {
+        "dimensions": {
+          "width": 100,
+          "height": 200,
+          "depth": 50
+        },
+        "colors": ["red", "green", "blue"],
+        "available": true
+      }
+    },
+    {
+      "itemId": "B2",
+      "value": "Beta",
+      "properties": {
+        "dimensions": {
+          "width": 150,
+          "height": 250,
+          "depth": 75
+        },
+        "colors": ["cyan", "magenta", "yellow"],
+        "available": false
+      }
+    }
+  ],
+  "users": [
+    {
+      "userId": "user01",
+      "profile": {
+        "firstName": "Alice",
+        "lastName": "Smith",
+        "age": 28,
+        "contacts": {
+          "email": "alice.smith@example.com",
+          "phone": "123-456-7890"
+        }
+      },
+      "posts": [
+        {
+          "postId": "p100",
+          "title": "First Post",
+          "comments": [
+            {
+              "commentId": "c1",
+              "text": "Great post!",
+              "reactions": {
+                "like": 10,
+                "love": 5
+              }
+            },
+            {
+              "commentId": "c2",
+              "text": "Very informative.",
+              "reactions": {
+                "like": 7,
+                "love": 2
+              }
+            }
+          ]
+        },
+        {
+          "postId": "p101",
+          "title": "Another Post",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "userId": "user02",
+      "profile": {
+        "firstName": "Bob",
+        "lastName": "Johnson",
+        "age": 35,
+        "contacts": {
+          "email": "bob.johnson@example.com",
+          "phone": "987-654-3210"
+        }
+      },
+      "posts": [
+        {
+          "postId": "p102",
+          "title": "Bob's Insights",
+          "comments": [
+            {
+              "commentId": "c3",
+              "text": "I agree with your points.",
+              "reactions": {
+                "like": 15,
+                "love": 3
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
